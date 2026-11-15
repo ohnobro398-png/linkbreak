@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LINKBREAK — Universal Shortlink Resolver</title>
+  <meta name="description" content="Paste a short link and discover its real destination. Follows standard HTTP redirects and shows the full redirect chain." />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">LB</span>
+      <span class="brand-name">LINKBREAK</span>
+      <span class="brand-tag">Universal Shortlink Resolver</span>
+    </div>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark / light theme">🌙</button>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Where does this link <em>really</em> go?</h1>
+      <p class="subtitle">
+        Paste a short link. LINKBREAK follows its standard HTTP redirects and
+        shows you the final destination — and every hop on the way there.
+      </p>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="Resolver modes">
+      <button class="tab active" data-tab="single" role="tab" aria-selected="true">Single link</button>
+      <button class="tab" data-tab="bulk" role="tab" aria-selected="false">Bulk · up to 20</button>
+      <button class="tab" data-tab="history" role="tab" aria-selected="false">History</button>
+    </nav>
+
+    <!-- Single URL -->
+    <section id="tab-single" class="panel active" role="tabpanel">
+      <form id="resolveForm" class="resolve-form">
+        <label class="sr-only" for="urlInput">Short URL to resolve</label>
+        <input id="urlInput" type="url" inputmode="url" autocomplete="off"
+               placeholder="https://example.com/short-link" maxlength="2048" required />
+        <button id="resolveBtn" type="submit" class="btn-primary">Resolve →</button>
+      </form>
+      <p class="hint">Supports bit.ly, tinyurl, t.co, is.gd, cutt.ly, rebrand.ly, buff.ly, ow.ly, rb.gy, s.id and any standard HTTP redirect service.</p>
+      <div id="progress" class="progress hidden" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <span>Following redirects…</span>
+      </div>
+      <div id="singleResult" class="result" aria-live="polite"></div>
+    </section>
+
+    <!-- Bulk -->
+    <section id="tab-bulk" class="panel" role="tabpanel">
+      <label for="bulkInput" class="bulk-label">One URL per line (max 20)</label>
+      <textarea id="bulkInput" rows="8" maxlength="50000"
+                placeholder="https://example.com/first-link&#10;https://example.com/second-link"></textarea>
+      <div class="row">
+        <button id="bulkBtn" type="button" class="btn-primary">Resolve all</button>
+        <button id="exportCsvBtn" type="button" class="btn-secondary" disabled>Export CSV</button>
+        <span id="bulkStatus" class="bulk-status" aria-live="polite"></span>
+      </div>
+      <div class="table-wrap">
+        <table id="bulkTable" class="results-table hidden">
+          <thead>
+            <tr><th>#</th><th>Original URL</th><th>Provider</th><th>Status</th><th>Final URL</th><th></th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section id="tab-history" class="panel" role="tabpanel">
+      <div class="row">
+        <button id="refreshHistoryBtn" type="button" class="btn-secondary">Refresh</button>
+        <button id="clearHistoryBtn" type="button" class="btn-danger">Clear history</button>
+      </div>
+      <div class="table-wrap">
+        <table id="historyTable" class="results-table">
+          <thead>
+            <tr><th>When</th><th>Original URL</th><th>Status</th><th>Final URL</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p id="historyEmpty" class="hint hidden">No resolutions stored yet — resolve a link and it will appear here.</p>
+    </section>
+
+    <section class="limits" aria-label="Honest limitations">
+      <h2>Honest limitations</h2>
+      <ul>
+        <li><strong>No CAPTCHA, login, paywall, or DRM bypass.</strong> If a destination needs a human to sign in or solve a challenge, LINKBREAK reports it instead of forcing its way in.</li>
+        <li><strong>JavaScript-only challenges and ad-gates need manual completion.</strong> Services such as Linkvertise and Adf.ly hide the destination behind an interstitial ad page and a JavaScript challenge — those are reported as <em>Unsupported</em>, never resolved by trickery.</li>
+        <li><strong>Not every short link resolves.</strong> Deleted links, expired links, and destinations that block automated requests will come back as <em>Partially Resolved</em> or <em>Failed</em>, with the reason shown.</li>
+        <li><strong>Local and private destinations are always blocked</strong> (localhost, 192.168.x.x, 10.x.x.x, and similar) to prevent server-side request forgery.</li>
+        <li><strong>Check the final domain before you click.</strong> Every result shows the final domain, flags a brand mismatch (for example a link that looks like a brand short link but lands elsewhere), and lists the full redirect chain — read the chain first, then decide whether to open the destination.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>LINKBREAK 1.0 — follows redirects, never executes downloaded scripts, never defeats access controls.</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
