@@ -1,0 +1,17 @@
+# LINKBREAK on Render (free tier)
+# Blueprint: https://render.com/docs/blueprint-spec
+# NOTE: use the Python environment, NOT Docker — the Dockerfile binds
+# a fixed port 8000, while Render routes traffic to $PORT.
+services:
+  - type: web
+    name: linkbreak
+    env: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      # Render free has an ephemeral filesystem; history lives in /tmp
+      # and resets on restart/redeploy. The resolver itself is unaffected.
+      - key: LINKBREAK_DB
+        value: /tmp/linkbreak.db
